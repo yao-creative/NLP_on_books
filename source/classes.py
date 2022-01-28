@@ -2,8 +2,13 @@ import PyPDF4
 import pickle
 import threading
 import logging
+import os
+import requests
 
-
+#Paths to save where the books are
+SAVE_PDF_PATH = "../books_pdf"
+SAVE_VAR_PATH = "../books_var"
+SAVE_TEXT_PATH = "../books_txt"
 class Library(): #collection of books
     
     #one day will automate "fill library" where it will fill it self with web scrapped books for processing
@@ -22,43 +27,73 @@ class Library(): #collection of books
             
 class Book(): #book contains processable texts
     
-    def __init__(self, title, path):
+    def __init__(self, title, link):
         """title = title of the book save file (better to have underscores), path is path to book pdf"""
         
         try:
-            if path[-3:] != "pdf":
-                print(f"title: {title} was not a pdf file")
-                return -1
             self.title = title
-            self.path = path
+            self.link = link
             self.pdfReader = None # create a dictionary of text where each key is page and value is text on a page
+            self.possible_formats={"pdf_possible": True,
+                "var_possible": True,
+                "txt_possible": True}
         except:
             return -1
-        
-    def retrieve_text(self, auto_save=True):
-        """Given the book with the title and path properties auto save set to true"""
+                       
+    def save(self):
+        #check if files are already existing, else save.
         
         try:
-
-            pdfFileObj = open(self.path, 'rb')  #select file
-            self.pdfReader = PyPDF4.PdfFileReader(pdfFileObj,strict=False)
-            numberPages = self.pdfReader.numPages
-    
-            logging.info(f"Retrieved: \033[92m {self.title}")
-            logging.info(f"Number of Pages: \033[92m {self.pdfReader.numPages}")
-            
-            
-            if auto_save: #save the books
-                self.save()
-                
-                
+            self.save_pdf()
         except:
-            print(f"Could not find: {self.path}")
-            
-            
-    def save(self):
-        with open(f"books_txt/{self.title}.var", "wb") as outfile1:
-            pickle.dump(self.pdfReader, outfile1)
-        with open(f"books_var/{self.title}.txt", "w") as outfile2:
-            outfile2.write("\n_____________________________________________\n".join(self.text.values()))
-        logging.info(f"File Saved, Title: \033[35m {self.title}")
+            self.possible_formats["pdf_possible"] =False
+        try: 
+            self.save_text()
+        except:
+            self.possible_formats["txt_possible"] =False
+        try: 
+            self.save_var()
+        except:
+            self.possible_formats["var_possible"] =False
+        
+        for possible in self.possible_formats:
+            print(f"Saved {possible}: {self.possible_formats[possible]}", end=" ")
+        print("")
+        
+    def create_pdfReader(self):
+        
+        pdfFileObj = open(f"{SAVE_PDF_PATH}/{self.title}.pdf", "rb")
+        self.pdfReader = PyPDF4.PdfFileReader(pdfFileObj,strict=False)
+        
+        
+    def save_var(self): #Save the variable version
+        if "{self.title}.var" not in os.listdir(SAVE_VAR_PATH):    
+            with open(f"{SAVE_VAR_PATH}/{self.title}.var", "wb") as outfile1:
+                pickle.dump(self.pdfReader, outfile1)
+                outfile1.close()
+
+                
+    def save_text(self): #Save the text
+        if "{self.title}.txt" not in os.listdir(SAVE_TEXT_PATH):
+            if self.possible_formats["pdf_possible"]: #If file has pdf form save using pdf form
+                with open(f"{SAVE_TEXT_PATH}/{self.title}.txt", "w") as outfile2:
+                    outfile2.write("\n\n\n".join(self.text.values()))
+                    outfile2.close()
+            elif self.link[-3:] == "txt":
+                r = requests.get(self.link)
+                with open(f"{SAVE_TEXT_PATH}/{self.title}.txt", "w") as outfile2:
+                    outfile2.write(bytes.decode(r.content))
+                    outfile2.close()
+                logging.info(f"File Saved, Title: \033[35m {self.title}")
+        
+    def save_pdf(self):
+        """Write the pdf into the a file"""
+        
+        logging.info(f"Writing: {self.title} as pdf")
+        r = requests.get(self.link) #use the link and write content
+        if "{self.title}.txt" not in os.listdir(SAVE_PDF_PATH): 
+            pdf = open(f"{SAVE_PDF_PATH}/{self.title}.pdf", "wb")
+            pdf.write(r.content)
+            pdf.close()
+        
+        self.create_pdfReader()
