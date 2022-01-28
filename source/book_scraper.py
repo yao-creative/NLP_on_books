@@ -13,7 +13,9 @@ from urllib.parse import urlparse
 
 
 MAXDEPTH = 3
-SAVE_PATH_PDF = "../books_pdf/" #change to relative save path
+SAVE_PDF_PATH = "../books_pdf"
+SAVE_VAR_PATH = "../books_var"
+SAVE_TEXT_PATH = "../books_txt" #change to relative save path
 
 # url = "https://open.umn.edu/opentextbooks/subjects/computer-science-information-systems"
 # #url = "https://open.umn.edu/opentextbooks/textbooks/deleting-dystopia-re-asserting-human-priorities-in-the-age-of-surveillance-capitalism"
@@ -46,9 +48,10 @@ class Book_Crawler():
             path = button["href"]
             if href_contains not in path: #Potentially different links might have same classes but not lead to ebooks.
                 #In the 
+                #print(f"{href_contains} not in {path}, skip")
                 continue
             if href_not_contains is not None and href_not_contains in path:
-                print(f"path: {path} has keyword, skip")
+                #print(f"path: {path} has keyword, skip")
                 continue
             if path and path.startswith('/'):
                 
@@ -85,18 +88,18 @@ def crawl(quintuple):
     if depth > maxdepth: #If we've searched too far stop searching
         return -1
     
-    print(f"Crawling: {link}")
+    #print(f"Crawling: {link}")
     
     r = requests.get(link) #parse current link
     soup = BeautifulSoup(r.content, 'lxml') 
     title = parse_title(soup.title.text)
     
     
-    if "{title}.pdf" in os.listdir(SAVE_PATH_PDF): #If the book is already in the library 
-        print(f"Book {title}.pdf already in library")
+    if "{title}.var" in os.listdir(SAVE_VAR_PATH): #If the book is already in the library 
+        #print(f"Book {title}.var already in library")
         return 1
     
-    pdf_path = f"{SAVE_PATH_PDF}/{title}.pdf" #add save path
+    pdf_path = f"{SAVE_PDF_PATH}/{title}.pdf" #add save path
     
     links = soup.find_all('a')
     hrefs = list()
@@ -128,7 +131,7 @@ def crawl(quintuple):
             if (ftype_downloadable): #find if link is downloadable file type
                 i += 1
                 
-                print(f"Retrieving PDF for: {title}")
+                #print(f"Retrieving PDF for: {title}")
                 book = classes.Book(title, href)
                 book.save()
                 return 1

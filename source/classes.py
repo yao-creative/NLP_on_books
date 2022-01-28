@@ -1,6 +1,5 @@
 import PyPDF4
 import pickle
-import threading
 import logging
 import os
 import requests
@@ -56,9 +55,9 @@ class Book(): #book contains processable texts
         except:
             self.possible_formats["var_possible"] =False
         
-        for possible in self.possible_formats:
-            print(f"Saved {possible}: {self.possible_formats[possible]}", end=" ")
-        print("")
+        # for possible in self.possible_formats:
+        #     print(f"Saved {possible}: {self.possible_formats[possible]}", end=" ")
+        # print("")
         
     def create_pdfReader(self):
         
@@ -66,20 +65,22 @@ class Book(): #book contains processable texts
         self.pdfReader = PyPDF4.PdfFileReader(pdfFileObj,strict=False)
         
         
-    def save_var(self): #Save the variable version
+    def save_var(self): #Save the book item as variable
         if "{self.title}.var" not in os.listdir(SAVE_VAR_PATH):    
             with open(f"{SAVE_VAR_PATH}/{self.title}.var", "wb") as outfile1:
-                pickle.dump(self.pdfReader, outfile1)
+                pickle.dump(self, outfile1)
                 outfile1.close()
 
                 
     def save_text(self): #Save the text
+        
         if "{self.title}.txt" not in os.listdir(SAVE_TEXT_PATH):
             if self.possible_formats["pdf_possible"]: #If file has pdf form save using pdf form
                 with open(f"{SAVE_TEXT_PATH}/{self.title}.txt", "w") as outfile2:
                     outfile2.write("\n\n\n".join(self.text.values()))
                     outfile2.close()
-            elif self.link[-3:] == "txt":
+                    
+            elif self.link[-3:] == "txt": #else if the link is txt form, save directly from link
                 r = requests.get(self.link)
                 with open(f"{SAVE_TEXT_PATH}/{self.title}.txt", "w") as outfile2:
                     outfile2.write(bytes.decode(r.content))
