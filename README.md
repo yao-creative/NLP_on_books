@@ -3,9 +3,9 @@ Scrape books: do stuff with them
 
 ## How to use book scraper:
 ### About:
-        The book scraper is an easy way to scrape any ".txt", ".pdf," ".utf-8," etc... type files from a webpage.
-    If no initial link to a targeted file type is found on the page it will look for the keywords: "read more," "pdf," and "download"
-    and follow the links to potentially find the targeted file before reaching a max crawl limit. All files found will be saved to pdf, txt, and var formats. The var format is a book object which contains the title of the book parsed from the page, the download link, a pdfReader object from pyPDF, and a dictionary of possible file types which were able to be saved as.
+   The book scraper is an easy way to scrape any ".txt", ".pdf," ".utf-8," etc... type files from a webpage.
+If no initial link to a targeted file type is found on the page it will look for the keywords: "read more," "pdf," and "download"
+and follow the links to potentially find the targeted file before reaching a max crawl limit. All files found will be saved to pdf, txt, and var formats. The var format is a book object which contains the title of the book parsed from the page, the download link, a pdfReader object from pyPDF, and a dictionary of possible file types which were able to be saved as.
     
 ### __Similar to the Gutenberg_scrape.py__: 
 You just need to 
