@@ -38,3 +38,7 @@ __href_not_contains__: when searching for links which might potentially lead to 
 ### 5) Auto generate key concepts quiz after summarizing
 ### 6) Auto generate review quiz
 ### 7) Read Problem Sets and Guess the main topics covered
+### 8) Create a book chat bot
+### 9) Write sentences in the style of the book
+### 10) Thematic analysis?
+   
