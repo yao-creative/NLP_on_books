@@ -6,6 +6,7 @@ from multiprocessing import Pool
 import classes
 import os
 from urllib.parse import urlparse
+import time
 # import selenium
 
 # from selenium import webdriver
@@ -40,6 +41,7 @@ class Book_Crawler():
         """link_class: the class of links the crawler should go into, crawl the links for pdfs
         Optional field: href_contains making sure the potential link crawled has a certain keyword
         Optional field: href_not_contains making sure the potential link crawled does not have a certain keyword"""
+        start = time.time()
         r = requests.get(self.url)
         soup = BeautifulSoup(r.content, 'lxml') 
         buttons = soup.find_all("a",  {"class": link_class})
@@ -59,15 +61,19 @@ class Book_Crawler():
                 path = urljoin(self.domain, path)
             
             to_visit.append((path, 1, self.domain, self.ftypes, self.maxdepth))
-        # print(f"first link: {to_visit[0][0]}")
-        # crawl(to_visit[0])
-        p = Pool()
+
+        p = Pool() #Create pools to multiprocess the crawling process
         result = p.map(crawl, to_visit)
         p.close()
         p.join()
-    
-    logging.info("All sites reached")
-    
+        
+        print(f"Books scraped {len(os.listdir('../books_var')) -original_num_books}")
+        print(f"Time taken: {time.time()- start}")
+        
+        
+        
+        
+#UTILITY FUNCTIONS
 def parse_title(soup_title_text):
     "Parse the title into useable inputs"
     index = soup_title_text.find("-")
