@@ -32,7 +32,7 @@ class Book_Crawler():
         self.url = url
         parsed = urlparse(url)
         self.domain = f"{parsed.scheme}://{parsed.netloc}"
-        print(f"domain: {self.domain}")
+        #print(f"domain: {self.domain}")
         self.ftypes = ftypes
         self.maxdepth = maxdepth
         
@@ -44,6 +44,7 @@ class Book_Crawler():
         soup = BeautifulSoup(r.content, 'lxml') 
         buttons = soup.find_all("a",  {"class": link_class})
         to_visit = list()
+        
         for button in buttons: #get all of the downloadable textbook links
             path = button["href"]
             if href_contains not in path: #Potentially different links might have same classes but not lead to ebooks.
@@ -95,7 +96,7 @@ def crawl(quintuple):
     title = parse_title(soup.title.text)
     
     
-    if "{title}.var" in os.listdir(SAVE_VAR_PATH): #If the book is already in the library 
+    if "{title}.var" in os.listdir(SAVE_TEXT_PATH): #If the book is already in the library 
         #print(f"Book {title}.var already in library")
         return 1
     

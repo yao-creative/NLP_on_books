@@ -41,7 +41,7 @@ class Book(): #book contains processable texts
                        
     def save(self):
         #check if files are already existing, else save.
-        
+        print(f"Saving: {self.title}")
         try:
             self.save_pdf()
         except:
@@ -75,17 +75,33 @@ class Book(): #book contains processable texts
     def save_text(self): #Save the text
         
         if "{self.title}.txt" not in os.listdir(SAVE_TEXT_PATH):
+            
+            #print(f"Saving")
             if self.possible_formats["pdf_possible"]: #If file has pdf form save using pdf form
                 with open(f"{SAVE_TEXT_PATH}/{self.title}.txt", "w") as outfile2:
-                    outfile2.write("\n\n\n".join(self.text.values()))
+                    #print(f"dir: {dir(self.pdfReader)}")
+                    for i in range(self.pdfReader.numPages):
+                        outfile2.write("\n\n\n".join(self.pdfReader.getPage(i)))
                     outfile2.close()
                     
-            elif self.link[-3:] == "txt": #else if the link is txt form, save directly from link
+            elif self.link[-3:] == "txt" or self.link[-5:] == "utf-8": #else if the link is txt form, save directly from link
                 r = requests.get(self.link)
+                #print(f"type: {type(r.content)}")
+                try:
+                    out = r.content.decode(encoding='cp1252')
+                except:
+                    try: 
+                        out = bytes.decode(r.content)
+                    except:
+                        out = r.content.decode('utf8')
+                        
                 with open(f"{SAVE_TEXT_PATH}/{self.title}.txt", "w") as outfile2:
-                    outfile2.write(bytes.decode(r.content))
+                    outfile2.write(out)
                     outfile2.close()
-                logging.info(f"File Saved, Title: \033[35m {self.title}")
+                    
+
+                    
+            logging.info(f"File Saved, Title: \033[35m {self.title}")
         
     def save_pdf(self):
         """Write the pdf into the a file"""
