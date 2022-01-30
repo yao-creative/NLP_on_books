@@ -1,0 +1,9 @@
+nltk 
+numpy
+tqdm
+transformers
+torch
+shared
+PyPDF4
+requests
+beautifulsoup4

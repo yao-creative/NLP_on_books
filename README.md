@@ -1,6 +1,8 @@
 ## Purpose
 Scrape books: do stuff with them
 
+## Installing Requirements:
+Type ```pip install -r requirements.txt```
 ## How to use book scraper:
 ### About:
    The book scraper is an easy way to scrape any ".txt", ".pdf," ".utf-8," etc... type files from a webpage.
