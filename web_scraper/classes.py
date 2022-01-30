@@ -6,7 +6,6 @@ import requests
 
 #Paths to save where the books are
 SAVE_PDF_PATH = "../books_pdf"
-SAVE_VAR_PATH = "../books_var"
 SAVE_TEXT_PATH = "../books_txt"
 class Library(): #collection of books
     
@@ -34,7 +33,6 @@ class Book(): #book contains processable texts
             self.link = link
             self.pdfReader = None # create a dictionary of text where each key is page and value is text on a page
             self.possible_formats={"pdf_possible": True,
-                "var_possible": True,
                 "txt_possible": True}
         except:
             return -1
@@ -50,10 +48,6 @@ class Book(): #book contains processable texts
             self.save_text()
         except:
             self.possible_formats["txt_possible"] =False
-        try: 
-            self.save_var()
-        except:
-            self.possible_formats["var_possible"] =False
         
         # for possible in self.possible_formats:
         #     print(f"Saved {possible}: {self.possible_formats[possible]}", end=" ")
@@ -65,11 +59,11 @@ class Book(): #book contains processable texts
         self.pdfReader = PyPDF4.PdfFileReader(pdfFileObj,strict=False)
         
         
-    def save_var(self): #Save the book item as variable
-        if "{self.title}.var" not in os.listdir(SAVE_VAR_PATH):    
-            with open(f"{SAVE_VAR_PATH}/{self.title}.var", "wb") as outfile1:
-                pickle.dump(self, outfile1)
-                outfile1.close()
+    # def save_var(self): #Save the book item as variable
+    #     if "{self.title}.var" not in os.listdir(SAVE_VAR_PATH):    
+    #         with open(f"{SAVE_VAR_PATH}/{self.title}.var", "wb") as outfile1:
+    #             pickle.dump(self, outfile1)
+    #             outfile1.close()
 
                 
     def save_text(self): #Save the text

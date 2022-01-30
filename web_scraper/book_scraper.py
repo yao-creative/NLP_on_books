@@ -15,7 +15,6 @@ import time
 
 MAXDEPTH = 3
 SAVE_PDF_PATH = "../books_pdf"
-SAVE_VAR_PATH = "../books_var"
 SAVE_TEXT_PATH = "../books_txt" #change to relative save path
 
 # url = "https://open.umn.edu/opentextbooks/subjects/computer-science-information-systems"
@@ -67,7 +66,7 @@ class Book_Crawler():
         p.close()
         p.join()
         
-        print(f"Books scraped {len(os.listdir('../books_var')) -original_num_books}")
+        print(f"Books scraped {len(os.listdir('../books_txt')) -original_num_books}")
         print(f"Time taken: {time.time()- start}")
         
         
@@ -102,7 +101,7 @@ def crawl(quintuple):
     title = parse_title(soup.title.text)
     
     
-    if "{title}.var" in os.listdir(SAVE_TEXT_PATH): #If the book is already in the library 
+    if "{title}.txt" in os.listdir(SAVE_TEXT_PATH): #If the book is already in the library 
         #print(f"Book {title}.var already in library")
         return 1
     
