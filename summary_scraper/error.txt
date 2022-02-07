@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/yao/Desktop/dkp/School/projects/Stuff_with_Books/summary_scraper/sum_scrape.py", line 78, in <module>
+    main()
+  File "/Users/yao/Desktop/dkp/School/projects/Stuff_with_Books/summary_scraper/sum_scrape.py", line 67, in main
+    list_tups = p.map(perform_search, search_stuff)
+  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/multiprocessing/pool.py", line 364, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/multiprocessing/pool.py", line 771, in get
+    raise self._value
+multiprocessing.pool.MaybeEncodingError: Error sending result: '<multiprocessing.pool.ExceptionWithTraceback object at 0x7fa27687dac0>'. Reason: 'TypeError("cannot pickle '_io.BufferedReader' object")'
